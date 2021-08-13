@@ -11,7 +11,7 @@ namespace Persistence.Repositories
     public class NotesRepository : INotesRepository
     {
         private readonly IFileClient _fileClient;
-        private const string FileName = "notes";
+        private const string Database = "notes";
         public NotesRepository(IFileClient fileClient)
         {
             _fileClient = fileClient;
@@ -19,29 +19,29 @@ namespace Persistence.Repositories
         public void Delete(int id)
         {
             var query = $"DELETE FROM note WHERE id = {id}";
-            _fileClient.WriteAll(FileName, query);
+            _fileClient.WriteAll(Database, query);
         }
 
         public void DeleteAll()
         {
-            _fileClient.DeleteFileContents(FileName);
+            _fileClient.DeleteFileContents(Database);
         }
 
         public void Edit(int id, string title, string text)
         {
 
             var query = $"UPDATE note SET Title = '{title}', Text = '{text}' WHERE id = {id}";
-            _fileClient.WriteAll(FileName, query);
+            _fileClient.WriteAll(Database, query);
         }
 
         public IEnumerable<Note> GetAll()
         {
-           return _fileClient.ReadAll<Note>(FileName);
+           return _fileClient.ReadAll<Note>(Database);
         }
 
         public void Save(Note note)
         {
-            _fileClient.Append(note, FileName);
+            _fileClient.Append(note, Database);
         }
     }
 }
