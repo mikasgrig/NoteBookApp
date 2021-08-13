@@ -32,9 +32,24 @@ namespace Persistence
             connection.Close();
         }
 
-        public void DeleteFileContents(string filename)
+        public void DeleteFileContents(string database)
         {
-            File.WriteAllLines(filename, Array.Empty<string>());
+            var connectionStringBuilder = new MySqlConnectionStringBuilder();
+            connectionStringBuilder.Server = "Localhost";
+            connectionStringBuilder.Port = 3306;
+            connectionStringBuilder.UserID = "testas";
+            connectionStringBuilder.Password = "Testas2020;";
+            connectionStringBuilder.Database = database;
+            var connectionString = connectionStringBuilder.GetConnectionString(true);
+            using var connection = new MySqlConnection(connectionString);
+            var command = new MySqlCommand("DELETE FROM note", connection);
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+            command = new MySqlCommand("ALTER TABLE `notes`.`note` AUTO_INCREMENT = 1 ", connection);
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
         }
 
         public IEnumerable<T> ReadAll<T>(string database)
