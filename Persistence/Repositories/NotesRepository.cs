@@ -18,9 +18,8 @@ namespace Persistence.Repositories
         }
         public void Delete(int id)
         {
-            var allNotes = _fileClient.ReadAll<Note>(FileName).ToList();
-            var deleteNotes = allNotes.Where(item => item.Id != id);
-            /*_fileClient.WriteAll(FileName, deleteNotes);*/
+            var query = $"DELETE FROM note WHERE id = {id}";
+            _fileClient.WriteAll(FileName, query);
         }
 
         public void DeleteAll()
@@ -30,11 +29,9 @@ namespace Persistence.Repositories
 
         public void Edit(int id, string title, string text)
         {
-            var allNotes = _fileClient.ReadAll<Note>(FileName).ToList();
-            var noteEdit = allNotes.First(item => item.Id == id);
-            noteEdit.Title = title;
-            noteEdit.Text = text;
-           /* _fileClient.WriteAll(FileName, allNotes);*/
+
+            var query = $"UPDATE note SET Title = '{title}', Text = '{text}' WHERE id = {id}";
+            _fileClient.WriteAll(FileName, query);
         }
 
         public IEnumerable<Note> GetAll()

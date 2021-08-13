@@ -85,10 +85,20 @@ namespace Persistence
 
         }
 
-        public void WriteAll<T>(string filename, IEnumerable<T> items)
+        public void WriteAll(string database, string query)
         {
-            var jsonItems = items.Select(item => JsonSerializer.Serialize(item));
-            File.WriteAllLines(filename, jsonItems);
+            var connectionStringBuilder = new MySqlConnectionStringBuilder();
+            connectionStringBuilder.Server = "Localhost";
+            connectionStringBuilder.Port = 3306;
+            connectionStringBuilder.UserID = "testas";
+            connectionStringBuilder.Password = "Testas2020;";
+            connectionStringBuilder.Database = database;
+            var connectionString = connectionStringBuilder.GetConnectionString(true);
+            using var connection = new MySqlConnection(connectionString);
+            var command = new MySqlCommand(query, connection);
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
         }
     }
 }
