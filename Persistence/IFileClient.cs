@@ -12,7 +12,7 @@ namespace Persistence
         void Append(Note item, string filename);
         IEnumerable<T> ReadAll<T>(string filename);
 
-        void WriteAll(string filename, string items);
+        void WriteAll(string filename, int items, string query);
         void DeleteFileContents(string filename);
     }
 }

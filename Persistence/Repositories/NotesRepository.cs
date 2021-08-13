@@ -18,8 +18,8 @@ namespace Persistence.Repositories
         }
         public void Delete(int id)
         {
-            var query = $"DELETE FROM note WHERE id = {id}";
-            _fileClient.WriteAll(Database, query);
+            var query = "DELETE FROM note WHERE id = @id";
+            _fileClient.WriteAll(Database, id, query);
         }
 
         public void DeleteAll()
@@ -30,8 +30,8 @@ namespace Persistence.Repositories
         public void Edit(int id, string title, string text)
         {
 
-            var query = $"UPDATE note SET Title = '{title}', Text = '{text}' WHERE id = {id}";
-            _fileClient.WriteAll(Database, query);
+            var query = $"UPDATE note SET Title = '{title}', Text = '{text}' WHERE id = @id";
+            _fileClient.WriteAll(Database, id, query);
         }
 
         public IEnumerable<Note> GetAll()

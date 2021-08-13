@@ -85,7 +85,7 @@ namespace Persistence
 
         }
 
-        public void WriteAll(string database, string query)
+        public void WriteAll(string database, int id, string query)
         {
             var connectionStringBuilder = new MySqlConnectionStringBuilder();
             connectionStringBuilder.Server = "Localhost";
@@ -96,6 +96,7 @@ namespace Persistence
             var connectionString = connectionStringBuilder.GetConnectionString(true);
             using var connection = new MySqlConnection(connectionString);
             var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id", id);
             connection.Open();
             command.ExecuteNonQuery();
             connection.Close();
