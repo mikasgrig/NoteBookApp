@@ -9,8 +9,8 @@ namespace Persistence
 {
     public interface IFileClient
     {
-        void Append(Note item, string filename);
-        IEnumerable<T> ReadAll<T>(string filename);
+        void Append(Note item, string filename, string query);
+        IEnumerable<T> ReadAll<T>(string filename, string tableName);
 
         void WriteAll(string filename, int items, string query);
         void DeleteFileContents(string filename);

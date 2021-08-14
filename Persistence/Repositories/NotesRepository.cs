@@ -10,38 +10,49 @@ namespace Persistence.Repositories
 
     public class NotesRepository : INotesRepository
     {
-        private readonly IFileClient _fileClient;
-        private const string Database = "notes";
-        public NotesRepository(IFileClient fileClient)
-        {
-            _fileClient = fileClient;
-        }
-        public void Delete(int id)
-        {
-            var query = "DELETE FROM note WHERE id = @id";
-            _fileClient.WriteAll(Database, id, query);
-        }
+       
+        private readonly ISqlClient _sqlClient;
 
-        public void DeleteAll()
+        public NotesRepository(ISqlClient sqlClient)
         {
-            _fileClient.DeleteFileContents(Database);
+            _sqlClient = sqlClient;
         }
-
-        public void Edit(int id, string title, string text)
-        {
-
-            var query = $"UPDATE note SET Title = '{title}', Text = '{text}' WHERE id = @id";
-            _fileClient.WriteAll(Database, id, query);
-        }
-
         public IEnumerable<Note> GetAll()
         {
-           return _fileClient.ReadAll<Note>(Database);
+            var sql = "SELECT * FROM note";
+            return _sqlClient.Query<Note>(sql);
         }
 
         public void Save(Note note)
         {
-            _fileClient.Append(note, Database);
+            var sql = "INSERT INTO note (DateCreated, Title, Text)  VALUES  (@DateCreated, @Title, @Text)";
+            _sqlClient.Execute(sql, note);
+        }
+
+        public void Edit(int id, string title, string text)
+        {
+            var sql = "UPDATE note SET Title = @titleNew, Text = @textNew WHERE id = @idUser";
+            var param = new {titleNew = title, TextNew= text, idUser = id  };
+            _sqlClient.Execute(sql, param);
+
+        }
+
+        public void Delete(int id)
+        {
+            var sql = "DELETE FROM note WHERE id = @idUser";
+            var param = new
+            {
+                idUser = id
+            };
+            _sqlClient.Execute(sql, param);
+        }
+
+        public void DeleteAll()
+        {
+            var sql = "DELETE FROM note";
+            _sqlClient.Execute(sql);
+            sql = "ALTER TABLE `notes`.`note` AUTO_INCREMENT = 1 ";
+            _sqlClient.Execute(sql);
         }
     }
 }

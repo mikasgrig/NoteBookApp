@@ -1,5 +1,6 @@
 ﻿using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
+using MySql.Data.MySqlClient;
 using Persistence;
 using Persistence.Repositories;
 using System;
@@ -15,11 +16,25 @@ namespace Note_Book
         public IServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
-            services.AddTransient<IFileClient, FileClient>();
+            AddSql(services);
             services.AddSingleton<INotesRepository, NotesRepository>();
             services.AddSingleton<INotesService, NotesService>();
             services.AddSingleton<NoteApp>();
             return services.BuildServiceProvider();
+        }
+        public IServiceCollection AddSql(IServiceCollection service)
+        {
+
+            var connectionStringBuilder = new MySqlConnectionStringBuilder();
+            connectionStringBuilder.Server = "Localhost";
+            connectionStringBuilder.Port = 3306;
+            connectionStringBuilder.UserID = "testas";
+            connectionStringBuilder.Password = "Testas2020;";
+            connectionStringBuilder.Database = "notes";
+            var connectionString = connectionStringBuilder.GetConnectionString(true);
+
+            service.AddTransient<ISqlClient>(_ => new SqlClient(connectionString));
+            return service;
         }
     }
 }
