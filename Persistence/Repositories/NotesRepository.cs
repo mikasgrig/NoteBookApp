@@ -19,39 +19,35 @@ namespace Persistence.Repositories
         }
         public IEnumerable<Note> GetAll()
         {
-            var sql = "SELECT * FROM note";
+            var sql = "SELECT * FROM notes";
             return _sqlClient.Query<Note>(sql);
         }
 
         public void Save(Note note)
         {
-            var sql = "INSERT INTO note (DateCreated, Title, Text)  VALUES  (@DateCreated, @Title, @Text)";
+            var sql = "INSERT INTO notes (DateCreated, Title, Text)  VALUES  (@DateCreated, @Title, @Text)";
             _sqlClient.Execute(sql, note);
         }
 
         public void Edit(int id, string title, string text)
         {
-            var sql = "UPDATE note SET Title = @titleNew, Text = @textNew WHERE id = @idUser";
-            var param = new {titleNew = title, TextNew= text, idUser = id  };
+            var sql = "UPDATE notes SET Title = @title, Text = @text WHERE id = @id";
+            var param = new {title, text, id  };
             _sqlClient.Execute(sql, param);
 
         }
 
         public void Delete(int id)
         {
-            var sql = "DELETE FROM note WHERE id = @idUser";
-            var param = new
-            {
-                idUser = id
-            };
-            _sqlClient.Execute(sql, param);
+            var sql = "DELETE FROM notes WHERE id = @id";
+            _sqlClient.Execute(sql, new { id });
         }
 
         public void DeleteAll()
         {
-            var sql = "DELETE FROM note";
+            var sql = "DELETE FROM notes";
             _sqlClient.Execute(sql);
-            sql = "ALTER TABLE `notes`.`note` AUTO_INCREMENT = 1 ";
+            sql = "ALTER TABLE `notes`.`notes` AUTO_INCREMENT = 1 ";
             _sqlClient.Execute(sql);
         }
     }
